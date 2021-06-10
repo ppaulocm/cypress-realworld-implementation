@@ -1,0 +1,7 @@
+# cypress
+cypress/screenshots
+cypress/videos
+cypress/reports
+node_modules
+results
+debug.log

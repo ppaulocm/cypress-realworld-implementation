@@ -1,0 +1,47 @@
+stages:
+    - test   
+    - .post
+
+# this job installs NPM dependencies and Cypress
+
+Form Tests:
+  stage: test
+  image:
+    name: cypress/included:7.0.0  
+    entrypoint: [""]
+  allow_failure: true
+  rules:
+    - if: '$SUITE_NAME == "smoke-tests"'
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: never   
+  script:
+    - npm ci
+    - $(npm bin)/print-env CI
+    - npm run cy:verify
+    - $(npm bin)/cypress run --spec './cypress/integration/smoke-tests/*' --env envFile="$TEST_ENV" --headless --browser chrome 
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+      - cypress/videos
+    reports:
+      junit:
+        - results/TEST-*.xml
+
+
+Push Test Notification:
+  stage: .post  
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: never
+  image: 
+      name: philippheuer/docker-gitlab-powershell
+      entrypoint: [""]
+  script:
+      - powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command .\\scripts\\pushTestNotification.ps1
+    

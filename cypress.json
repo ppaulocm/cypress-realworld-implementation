@@ -1,0 +1,18 @@
+{
+  "defaultCommandTimeout": 50000,
+  "pageLoadTimeout": 50000,
+  "responseTimeout": 50000,
+  "chromeWebSecurity": false,
+  "viewportWidth": 1000,
+  "viewportHeight": 1000,
+  "numTestsKeptInMemory": 1,
+  "video": false,
+  "ignoreTestFiles": [
+    "*.json",
+    "*.txt"
+  ],
+  "reporter": "mocha-junit-reporter",
+  "reporterOptions": {
+    "mochaFile": "./results/TEST-[hash].xml"
+  }
+}
